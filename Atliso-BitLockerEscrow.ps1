@@ -1,3 +1,19 @@
+<#PSScriptInfo
+.VERSION 1.0.1
+.GUID 42717945-3a08-4fb2-8608-57b20814ca86
+.AUTHOR Atliso
+.COMPANYNAME Atliso
+.COPYRIGHT (c) 2026 Atliso. MIT License.
+.TAGS Intune BitLocker EntraID Escrow RecoveryKey Remediation
+.LICENSEURI https://github.com/Atliso-Dev/bitlocker-escrow/blob/main/LICENSE
+.PROJECTURI https://atliso.com/blog/bitlocker-recovery-key-escrow-fix
+.REQUIREDMODULES 
+.EXTERNALMODULEDEPENDENCIES
+.REQUIREDSCRIPTS
+.EXTERNALSCRIPTDEPENDENCIES
+.RELEASENOTES Gallery metadata added. Script logic unchanged from v1.0.0.
+#>
+
 <#
 .SYNOPSIS
     Atliso-BitLockerEscrow.ps1 - Audit and force BitLocker recovery-key escrow to Entra ID.

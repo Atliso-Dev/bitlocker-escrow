@@ -1,5 +1,7 @@
 # BitLocker Escrow
 
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/Atliso-BitLockerEscrow?label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/Atliso-BitLockerEscrow)
+
 PowerShell script that checks whether a device's BitLocker recovery key actually made it to Entra ID, and forces the backup when it did not.
 
 BitLocker can report as fully encrypted while the recovery password never escrowed to Entra ID. The device looks compliant right up until someone needs the key and it is not there. This script confirms the escrow really happened, and forces it when it did not.
@@ -12,6 +14,16 @@ BitLocker can report as fully encrypted while the recovery password never escrow
 - Handles the awkward cases: no recovery protector present, or more than one protector on a volume
 - Reports only by default. Nothing changes until you set `-WhatIf $false`
 - Logs every action to `%LOCALAPPDATA%\Atliso\BitLockerEscrow.log`
+
+## Install
+
+From the [PowerShell Gallery](https://www.powershellgallery.com/packages/Atliso-BitLockerEscrow):
+
+```powershell
+Install-Script Atliso-BitLockerEscrow -Scope CurrentUser
+```
+
+Or download `Atliso-BitLockerEscrow.ps1` from this repo or the [latest release](../../releases/latest).
 
 ## Quick start
 

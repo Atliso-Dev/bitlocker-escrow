@@ -1,0 +1,48 @@
+name: Tests
+
+# On every change, and every Wednesday after Patch Tuesday against GitHub's current Windows image,
+# so a Windows or PowerShell change that breaks the script shows up as a failed run.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 3'
+  workflow_dispatch:
+
+env:
+  SCRIPT: Atliso-BitLockerEscrow.ps1
+
+jobs:
+  pester:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester and PSScriptAnalyzer
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -MinimumVersion 5.5 -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+      - name: Check syntax, metadata and analyzer errors
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\$env:SCRIPT", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) { $errors; exit 1 }
+          if ((Get-Content ".\$env:SCRIPT" -Raw) -match '<#PSScriptInfo') { Test-ScriptFileInfo -Path ".\$env:SCRIPT" | Select-Object Name, Version, Guid }
+          $found = Invoke-ScriptAnalyzer -Path ".\$env:SCRIPT" -Severity Error
+          if ($found) { $found | Format-Table -AutoSize | Out-String | Write-Host; exit 1 }
+      - name: Run Pester
+        run: |
+          Import-Module Pester -MinimumVersion 5.5
+          $c = New-PesterConfiguration
+          $c.Run.Path = './tests'
+          $c.Run.Exit = $true
+          $c.Output.Verbosity = 'Detailed'
+          Invoke-Pester -Configuration $c
